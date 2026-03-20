@@ -1,5 +1,5 @@
 import { envSchema } from "env";
-import fastify, { type FastifyError } from "fastify";
+import fastify from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import {
 	jsonSchemaTransform,
@@ -19,7 +19,7 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(fastifySwagger, {
 	openapi: {
 		info: {
-			title: "DeployerX Agent API",
+			title: "DeployerX API",
 			version: "1.0.0",
 		},
 		servers: [],
