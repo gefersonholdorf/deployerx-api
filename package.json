@@ -1,0 +1,29 @@
+{
+  "name": "deployerx-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "dev": "tsx --watch --env-file=.env src/index",
+    "start": "node --env-file=.env dist/index.js",
+    "prod": "npm run build && npm run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@biomejs/biome": "^2.4.8",
+    "@types/node": "^25.5.0",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@fastify/swagger": "^9.7.0",
+    "@scalar/fastify-api-reference": "^1.49.3",
+    "fastify": "^5.8.2",
+    "fastify-type-provider-zod": "^6.1.0",
+    "zod": "^4.3.6"
+  }
+}
