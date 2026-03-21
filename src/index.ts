@@ -8,6 +8,7 @@ import {
 } from "fastify-type-provider-zod";
 import fastifySwagger from "@fastify/swagger";
 import fastifyScalar from "@scalar/fastify-api-reference";
+import { db } from "db/connection";
 
 const app = fastify({
 	logger: envSchema.APP !== "production",
@@ -35,6 +36,8 @@ app.register(fastifyScalar, {
 	},
 });
 
+app.decorate("db", db);
+
 const port = envSchema.PORT;
 
 app.listen({ port }, (err) => {
@@ -43,6 +46,6 @@ app.listen({ port }, (err) => {
 		process.exit(1);
 	}
 	if (envSchema.APP !== "production") {
-		app.log.info(`Server is running at port ${port}`);
+		app.log.info(`DeployerX API is running at port ${port}`);
 	}
 });

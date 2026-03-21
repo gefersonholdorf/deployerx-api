@@ -1,0 +1,143 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "2c4bfd91-6e39-44c7-b2d5-76b229a92bdf",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "users": {
+      "name": "users",
+      "columns": {
+        "cd_user": {
+          "name": "cd_user",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nm_name": {
+          "name": "nm_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_email": {
+          "name": "ds_email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_phone": {
+          "name": "ds_phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ds_cpf": {
+          "name": "ds_cpf",
+          "type": "varchar(11)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_password_hash": {
+          "name": "ds_password_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_logo_url": {
+          "name": "ds_logo_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fl_active": {
+          "name": "fl_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fl_2fa_enabled": {
+          "name": "fl_2fa_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "ds_2fa_secret": {
+          "name": "ds_2fa_secret",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dt_updated_at": {
+          "name": "dt_updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "dt_created_at": {
+          "name": "dt_created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "dt_deleted_at": {
+          "name": "dt_deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "users_cd_user": {
+          "name": "users_cd_user",
+          "columns": [
+            "cd_user"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "users_ds_email_unique": {
+          "name": "users_ds_email_unique",
+          "columns": [
+            "ds_email"
+          ]
+        },
+        "users_ds_cpf_unique": {
+          "name": "users_ds_cpf_unique",
+          "columns": [
+            "ds_cpf"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
