@@ -5,9 +5,10 @@
   "scripts": {
     "db-generate": "npx drizzle-kit generate --config=src/drizzle.config.ts",
     "db-migrate": "npx drizzle-kit migrate --config=src/drizzle.config.ts",
+    "seed": "node --env-file=.env.app dist/db/seed/index.js",
     "build": "tsc && tsc-alias",
-    "dev": "tsx --watch --env-file=.env.app src/index",
-    "start": "node --env-file=.env.app dist/index.js",
+    "dev": "tsx --watch --env-file=.env.app src/server",
+    "start": "node --env-file=.env.app dist/server.js",
     "prod": "npm run build && npm run start"
   },
   "keywords": [],

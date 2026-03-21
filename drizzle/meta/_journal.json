@@ -8,6 +8,13 @@
       "when": 1774050501845,
       "tag": "0000_silent_mariko_yashida",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1774061612039,
+      "tag": "0001_unknown_maginty",
+      "breakpoints": true
     }
   ]
 }

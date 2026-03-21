@@ -1,0 +1,238 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "f1307876-8cf3-483d-b6ef-76e16cfd4e39",
+  "prevId": "2c4bfd91-6e39-44c7-b2d5-76b229a92bdf",
+  "tables": {
+    "refresh_tokens": {
+      "name": "refresh_tokens",
+      "columns": {
+        "cd_refresh_token": {
+          "name": "cd_refresh_token",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "cd_user": {
+          "name": "cd_user",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_user_agent": {
+          "name": "ds_user_agent",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_ip_address": {
+          "name": "ds_ip_address",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_token_hash": {
+          "name": "ds_token_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dt_revoked": {
+          "name": "dt_revoked",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dt_expires_at": {
+          "name": "dt_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dt_created_at": {
+          "name": "dt_created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "refresh_tokens_cd_user_users_cd_user_fk": {
+          "name": "refresh_tokens_cd_user_users_cd_user_fk",
+          "tableFrom": "refresh_tokens",
+          "tableTo": "users",
+          "columnsFrom": [
+            "cd_user"
+          ],
+          "columnsTo": [
+            "cd_user"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "refresh_tokens_cd_refresh_token": {
+          "name": "refresh_tokens_cd_refresh_token",
+          "columns": [
+            "cd_refresh_token"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "refresh_tokens_ds_token_hash_unique": {
+          "name": "refresh_tokens_ds_token_hash_unique",
+          "columns": [
+            "ds_token_hash"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "cd_user": {
+          "name": "cd_user",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nm_name": {
+          "name": "nm_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_email": {
+          "name": "ds_email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_phone": {
+          "name": "ds_phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ds_cpf": {
+          "name": "ds_cpf",
+          "type": "varchar(11)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_password_hash": {
+          "name": "ds_password_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_logo_url": {
+          "name": "ds_logo_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fl_active": {
+          "name": "fl_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fl_2fa_enabled": {
+          "name": "fl_2fa_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "ds_2fa_secret": {
+          "name": "ds_2fa_secret",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dt_updated_at": {
+          "name": "dt_updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "dt_created_at": {
+          "name": "dt_created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "dt_deleted_at": {
+          "name": "dt_deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "users_cd_user": {
+          "name": "users_cd_user",
+          "columns": [
+            "cd_user"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "users_ds_email_unique": {
+          "name": "users_ds_email_unique",
+          "columns": [
+            "ds_email"
+          ]
+        },
+        "users_ds_cpf_unique": {
+          "name": "users_ds_cpf_unique",
+          "columns": [
+            "ds_cpf"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
