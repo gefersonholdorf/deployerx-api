@@ -1,3 +1,7 @@
+import fastifyJwt from "@fastify/jwt";
+import fastifySwagger from "@fastify/swagger";
+import fastifyScalar from "@scalar/fastify-api-reference";
+import { db } from "db/connection";
 import { envSchema } from "env";
 import fastify from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
@@ -6,9 +10,6 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 } from "fastify-type-provider-zod";
-import fastifySwagger from "@fastify/swagger";
-import fastifyScalar from "@scalar/fastify-api-reference";
-import { db } from "db/connection";
 import { routes } from "routes/routes";
 import { ErrorHandler } from "shared/error-handler";
 
@@ -36,6 +37,10 @@ app.register(fastifyScalar, {
 	configuration: {
 		theme: "kepler",
 	},
+});
+
+app.register(fastifyJwt, {
+	secret: envSchema.JWT_SECRET_KEY,
 });
 
 app.decorate("db", db);

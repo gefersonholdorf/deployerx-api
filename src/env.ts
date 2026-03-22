@@ -4,6 +4,7 @@ const env = z.object({
 	APP: z.enum(["development", "production", "test"]).default("development"),
 	APP_NAME: z.string(),
 	PORT: z.coerce.number().default(3000),
+	JWT_SECRET_KEY: z.string(),
 	DATABASE_URL: z.string(),
 });
 
