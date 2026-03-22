@@ -45,10 +45,19 @@ export class LoginService implements Service<LoginRequest, LoginResponse> {
 		}
 
 		if (existingUserByEmail.fl2FAEnabled) {
+			const tempToken = this.app.jwt.sign(
+				{
+					cdUser: existingUserByEmail.cdUser,
+				},
+				{
+					expiresIn: "5m",
+				},
+			);
+
 			return {
 				right: {
 					requires2FA: true,
-					tempToken: "123TEMPTOKEN",
+					tempToken,
 				},
 			};
 		}

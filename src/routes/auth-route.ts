@@ -5,6 +5,7 @@ import { DrizzleUsersRepository } from "repositories/drizzle-repository/drizzle-
 import { Enable2FAService } from "services/auth/enable2FA.service";
 import { LoginService } from "services/auth/login.service";
 import { Setup2FAService } from "services/auth/setup2FA.service";
+import { Verify2FAService } from "services/auth/verify2FA.service";
 import { TotpService } from "services/totp/totp.service";
 import z from "zod";
 
@@ -15,6 +16,11 @@ export const authRoute = async (app: FastifyInstance) => {
 	const loginService = new LoginService(app, drizzleUserService);
 	const setup2FAService = new Setup2FAService(totpService, drizzleUserService);
 	const enable2FAService = new Enable2FAService(
+		totpService,
+		drizzleUserService,
+	);
+	const verify2FAService = new Verify2FAService(
+		app,
 		totpService,
 		drizzleUserService,
 	);
@@ -134,6 +140,9 @@ export const authRoute = async (app: FastifyInstance) => {
 					200: z.object({
 						message: z.string(),
 					}),
+					400: z.object({
+						message: z.string(),
+					}),
 					401: z.object({
 						message: z.string(),
 					}),
@@ -167,5 +176,53 @@ export const authRoute = async (app: FastifyInstance) => {
 		},
 	);
 
-	app.post("/2fa/verify", () => {});
+	app.withTypeProvider<ZodTypeProvider>().post(
+		"/2fa/verify",
+		{
+			preHandler: [authenticate],
+			schema: {
+				title: "Auth",
+				description: "Verify a user's 2FA code and complete authentication.",
+				tags: ["Auth"],
+				body: z.object({
+					code: z.string(),
+				}),
+				response: {
+					200: z.object({
+						token: z.string(),
+					}),
+					400: z.object({
+						message: z.string(),
+					}),
+					401: z.object({
+						message: z.string(),
+					}),
+					500: z.object({
+						message: z.string(),
+					}),
+				},
+			},
+		},
+		async (request, reply) => {
+			const { code } = request.body;
+			const { cdUser } = request.auth;
+
+			const { left, right } = await verify2FAService.execute({ code, cdUser });
+
+			if (left) {
+				if (left instanceof Error) {
+					return reply.status(500).send({
+						message: left.message,
+					});
+				}
+				return reply.status(500).send({
+					message: "Internal server error.",
+				});
+			}
+
+			return reply.status(200).send({
+				token: right.token,
+			});
+		},
+	);
 };

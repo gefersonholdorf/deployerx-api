@@ -27,7 +27,6 @@ export class TotpService {
 			return verify({
 				secret,
 				token,
-				epochTolerance: 30,
 			});
 		} catch (error) {
 			if (error instanceof SecretTooShortError) {

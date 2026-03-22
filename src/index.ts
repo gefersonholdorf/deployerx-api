@@ -26,7 +26,21 @@ app.register(fastifySwagger, {
 			title: "DeployerX API",
 			version: "1.0.0",
 		},
-		servers: [],
+		servers: [
+			{
+				url: `http://localhost:3333`,
+				description: "Development server",
+			},
+		],
+		components: {
+			securitySchemes: {
+				ApiKeyAuth: {
+					type: "apiKey",
+					name: "Authorization",
+					in: "header",
+				},
+			},
+		},
 	},
 	transform: jsonSchemaTransform,
 });
