@@ -1,12 +1,29 @@
 import { users } from "db/schema/users";
 import { app } from "index";
+import { eq } from "drizzle-orm";
+import { genSaltSync, hashSync } from "bcrypt-ts";
 
 export const usersSeed = async () => {
 	try {
-		await app.db.insert(users).values({
+		const existingUser = await app.db
+			.select({
+				cdUser: users.cdUser,
+			})
+			.from(users)
+			.where(eq(users.dsEmail, "admin@example.com"));
+
+		if (existingUser.length > 0) {
+			return;
+		}
+
+		const SALT = genSaltSync(10);
+
+		const dsPasswordHash = hashSync("admin", SALT);
+
+		return await app.db.insert(users).values({
 			nmName: "admin",
 			dsEmail: "admin@example.com",
-			dsPasswordHash: "admin",
+			dsPasswordHash,
 			dsCPF: "12345678901",
 			flActive: true,
 			fl2FAEnabled: false,

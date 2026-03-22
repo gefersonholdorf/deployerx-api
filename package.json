@@ -18,15 +18,19 @@
   "dependencies": {
     "@biomejs/biome": "^2.4.8",
     "@types/node": "^25.5.0",
+    "bcrypt-ts": "^8.0.1",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "mysql2": "^3.20.0",
+    "otplib": "^13.4.0",
+    "qrcode": "^1.5.4",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@fastify/swagger": "^9.7.0",
     "@scalar/fastify-api-reference": "^1.49.3",
+    "@types/qrcode": "^1.5.6",
     "drizzle-kit": "^0.31.10",
     "fastify": "^5.8.2",
     "fastify-type-provider-zod": "^6.1.0",

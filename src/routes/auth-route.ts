@@ -1,8 +1,14 @@
 import type { FastifyInstance } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
+import { DrizzleUsersRepository } from "repositories/drizzle-repository/drizzle-users-repository";
+import { LoginService } from "services/auth/login.service";
 import z from "zod";
 
 export const authRoute = async (app: FastifyInstance) => {
-	app.post(
+	const drizzleUserService = new DrizzleUsersRepository(app);
+	const loginService = new LoginService(drizzleUserService);
+
+	app.withTypeProvider<ZodTypeProvider>().post(
 		"/login",
 		{
 			schema: {
@@ -28,7 +34,18 @@ export const authRoute = async (app: FastifyInstance) => {
 				},
 			},
 		},
-		async (request, reply) => {},
+		async (request, reply) => {
+			const { email, password } = request.body;
+
+			try {
+				const loginServiceResult = await loginService.execute({
+					email,
+					password,
+				});
+
+				return reply.status(200).send(loginServiceResult);
+			} catch (error) {}
+		},
 	);
 
 	app.post("/2fa/setup", () => {});
