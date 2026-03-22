@@ -2,12 +2,22 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { authenticate } from "middlewares/authenticate";
 import { DrizzleUsersRepository } from "repositories/drizzle-repository/drizzle-users-repository";
+import { Enable2FAService } from "services/auth/enable2FA.service";
 import { LoginService } from "services/auth/login.service";
+import { Setup2FAService } from "services/auth/setup2FA.service";
+import { TotpService } from "services/totp/totp.service";
 import z from "zod";
 
 export const authRoute = async (app: FastifyInstance) => {
 	const drizzleUserService = new DrizzleUsersRepository(app);
+	const totpService = new TotpService();
+
 	const loginService = new LoginService(app, drizzleUserService);
+	const setup2FAService = new Setup2FAService(totpService, drizzleUserService);
+	const enable2FAService = new Enable2FAService(
+		totpService,
+		drizzleUserService,
+	);
 
 	app.withTypeProvider<ZodTypeProvider>().post(
 		"/login",
@@ -49,6 +59,10 @@ export const authRoute = async (app: FastifyInstance) => {
 						message: left.message,
 					});
 				}
+
+				return reply.status(500).send({
+					message: "Internal server error.",
+				});
 			}
 
 			return reply.status(200).send({
@@ -59,7 +73,7 @@ export const authRoute = async (app: FastifyInstance) => {
 		},
 	);
 
-	app.post(
+	app.withTypeProvider<ZodTypeProvider>().post(
 		"/2fa/setup",
 		{
 			preHandler: [authenticate],
@@ -81,13 +95,77 @@ export const authRoute = async (app: FastifyInstance) => {
 				},
 			},
 		},
-		(request, reply) => {
+		async (request, reply) => {
+			const { cdUser } = request.auth;
+
+			const { left, right } = await setup2FAService.execute({ cdUser });
+
+			if (left) {
+				if (left instanceof Error) {
+					return reply.status(500).send({
+						message: left.message,
+					});
+				}
+
+				return reply.status(500).send({
+					message: "Internal server error.",
+				});
+			}
+
 			return reply.status(200).send({
-				qrCode: "https://api.com.br",
+				qrCode: right.qrCode,
 			});
 		},
 	);
 
-	app.post("/2fa/enable", () => {});
+	app.withTypeProvider<ZodTypeProvider>().post(
+		"/2fa/enable",
+		{
+			preHandler: [authenticate],
+			schema: {
+				title: "Auth",
+				description:
+					"Enables two-factor authentication (2FA) by validating the provided OTP code for the authenticated user.",
+				tags: ["Auth"],
+				body: z.object({
+					code: z.string(),
+				}),
+				response: {
+					200: z.object({
+						message: z.string(),
+					}),
+					401: z.object({
+						message: z.string(),
+					}),
+					500: z.object({
+						message: z.string(),
+					}),
+				},
+			},
+		},
+		async (request, reply) => {
+			const { cdUser } = request.auth;
+			const { code } = request.body;
+
+			const { left, right } = await enable2FAService.execute({ cdUser, code });
+
+			if (left) {
+				if (left instanceof Error) {
+					return reply.status(500).send({
+						message: left.message,
+					});
+				}
+
+				return reply.status(500).send({
+					message: "Internal server error.",
+				});
+			}
+
+			return reply.status(200).send({
+				message: right.message,
+			});
+		},
+	);
+
 	app.post("/2fa/verify", () => {});
 };

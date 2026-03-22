@@ -6,8 +6,8 @@ declare module "fastify" {
 		db: typeof db;
 	}
 	interface FastifyRequest {
-		user: {
-			cdUser: string;
+		auth: {
+			cdUser: number;
 		};
 	}
 }

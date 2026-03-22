@@ -18,4 +18,21 @@ export class DrizzleUsersRepository implements UsersRepository {
 
 		return existingUserByEmail[0];
 	}
+
+	async findUserById(cdUser: number): Promise<User | null> {
+		const existingUserById: User[] = await this.app.db
+			.select()
+			.from(users)
+			.where(eq(users.cdUser, cdUser));
+
+		if (existingUserById.length <= 0) {
+			return null;
+		}
+
+		return existingUserById[0];
+	}
+
+	async save(user: User, cdUser: number): Promise<void> {
+		await this.app.db.update(users).set(user).where(eq(users.cdUser, cdUser));
+	}
 }

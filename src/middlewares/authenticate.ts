@@ -22,6 +22,12 @@ export const authenticate = async (
 
 	try {
 		await request.jwtVerify();
+
+		const user = request.user as { cdUser: number };
+
+		request.auth = {
+			cdUser: user.cdUser,
+		};
 	} catch (error) {
 		console.error(error);
 		return reply.status(401).send({

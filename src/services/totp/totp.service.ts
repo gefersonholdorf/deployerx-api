@@ -13,7 +13,7 @@ interface VerifyTokenProps {
 }
 
 interface GenerateQRCodeProps {
-	userId: number;
+	userEmail: string;
 	secret: string;
 }
 
@@ -22,7 +22,7 @@ export class TotpService {
 		return generateSecret();
 	}
 
-	async verifyToken({ token, secret }: VerifyTokenProps) {
+	async verifyCode({ token, secret }: VerifyTokenProps) {
 		try {
 			return verify({
 				secret,
@@ -51,10 +51,10 @@ export class TotpService {
 		});
 	}
 
-	async generateQRCode({ userId, secret }: GenerateQRCodeProps) {
+	async generateQRCode({ userEmail, secret }: GenerateQRCodeProps) {
 		const uri = generateURI({
 			issuer: envSchema.APP_NAME,
-			label: String(userId),
+			label: userEmail,
 			secret,
 		});
 
