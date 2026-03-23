@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "db-generate": "npx drizzle-kit generate --config=src/drizzle.config.ts",
+    "db-migrate": "npx drizzle-kit migrate --config=src/drizzle.config.ts",
+    "seed": "node --env-file=.env.app dist/db/seed/index.js",
     "build": "tsc && tsc-alias",
-    "dev": "tsx --watch --env-file=.env src/index",
-    "start": "node --env-file=.env dist/index.js",
+    "dev": "tsx --watch --env-file=.env.app src/server",
+    "start": "node --env-file=.env.app dist/server.js",
     "prod": "npm run build && npm run start"
   },
   "keywords": [],
@@ -14,16 +17,26 @@
   "description": "",
   "dependencies": {
     "@biomejs/biome": "^2.4.8",
+    "@fastify/jwt": "^10.0.0",
     "@types/node": "^25.5.0",
+    "bcrypt-ts": "^8.0.1",
+    "dayjs": "^1.11.20",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "mysql2": "^3.20.0",
+    "otplib": "^13.4.0",
+    "qrcode": "^1.5.4",
     "tsc-alias": "^1.8.16",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@fastify/swagger": "^9.7.0",
     "@scalar/fastify-api-reference": "^1.49.3",
+    "@types/qrcode": "^1.5.6",
+    "drizzle-kit": "^0.31.10",
     "fastify": "^5.8.2",
     "fastify-type-provider-zod": "^6.1.0",
+    "tsx": "^4.21.0",
     "zod": "^4.3.6"
   }
 }
