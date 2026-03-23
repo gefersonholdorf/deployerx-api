@@ -1,8 +1,8 @@
 import { mysqlTable, int, varchar, timestamp } from "drizzle-orm/mysql-core";
 import { users } from "./users";
 
-export const refreshTokens = mysqlTable("refresh_tokens", {
-	cdRefreshToken: int("cd_refresh_token").primaryKey().autoincrement(),
+export const sessions = mysqlTable("sessions", {
+	cdSession: int("cd_session").primaryKey().autoincrement(),
 	cdUser: int("cd_user")
 		.notNull()
 		.references(() => users.cdUser),

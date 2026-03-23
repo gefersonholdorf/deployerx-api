@@ -2,10 +2,13 @@ import type { UsersRepository } from "repositories/users-repository";
 import type { Either, Service } from "services/service";
 import { compareSync } from "bcrypt-ts";
 import type { FastifyInstance } from "fastify";
+import type { SessionsRepository } from "repositories/sessions-repository";
 
 interface LoginRequest {
 	email: string;
 	password: string;
+	userAgent: string;
+	ipAddress: string;
 }
 
 interface LoginResponse {
@@ -18,11 +21,14 @@ export class LoginService implements Service<LoginRequest, LoginResponse> {
 	constructor(
 		private readonly app: FastifyInstance,
 		private readonly usersRepository: UsersRepository,
+		private readonly sessionsRepository: SessionsRepository,
 	) {}
 
 	async execute({
 		email,
 		password,
+		userAgent,
+		ipAddress,
 	}: LoginRequest): Promise<Either<Error, LoginResponse>> {
 		const existingUserByEmail =
 			await this.usersRepository.findUserByEmail(email);
@@ -70,6 +76,15 @@ export class LoginService implements Service<LoginRequest, LoginResponse> {
 				expiresIn: "1d",
 			},
 		);
+
+		await this.sessionsRepository.create({
+			dsIpAddress: ipAddress,
+			dsTokenHash: token,
+			dsUserAgent: userAgent,
+			cdUser: existingUserByEmail.cdUser,
+			dtExpiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1d
+			dtRevoked: null,
+		});
 
 		return {
 			right: {

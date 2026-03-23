@@ -15,6 +15,13 @@
       "when": 1774061612039,
       "tag": "0001_unknown_maginty",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1774223281456,
+      "tag": "0002_deep_scourge",
+      "breakpoints": true
     }
   ]
 }

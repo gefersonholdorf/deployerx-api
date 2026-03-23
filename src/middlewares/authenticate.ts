@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { DrizzleSessionsRepository } from "repositories/drizzle-repository/drizzle-sessions-repository";
 
 export const authenticate = async (
 	request: FastifyRequest,
@@ -24,6 +25,15 @@ export const authenticate = async (
 		await request.jwtVerify();
 
 		const user = request.user as { cdUser: number };
+
+		const sessionsRepository = new DrizzleSessionsRepository(request.server);
+		const lastSession = await sessionsRepository.findByCdUser(user.cdUser);
+
+		if (!lastSession) {
+			return reply.status(401).send({
+				message: "Session expired. Please login again.",
+			});
+		}
 
 		request.auth = {
 			cdUser: user.cdUser,

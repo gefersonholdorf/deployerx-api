@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { authenticate } from "middlewares/authenticate";
+import { DrizzleSessionsRepository } from "repositories/drizzle-repository/drizzle-sessions-repository";
 import { DrizzleUsersRepository } from "repositories/drizzle-repository/drizzle-users-repository";
 import { Enable2FAService } from "services/auth/enable2FA.service";
 import { LoginService } from "services/auth/login.service";
@@ -10,19 +11,27 @@ import { TotpService } from "services/totp/totp.service";
 import z from "zod";
 
 export const authRoute = async (app: FastifyInstance) => {
-	const drizzleUserService = new DrizzleUsersRepository(app);
+	const drizzleUserRepository = new DrizzleUsersRepository(app);
+	const drizzleSessionRepository = new DrizzleSessionsRepository(app);
 	const totpService = new TotpService();
 
-	const loginService = new LoginService(app, drizzleUserService);
-	const setup2FAService = new Setup2FAService(totpService, drizzleUserService);
+	const loginService = new LoginService(
+		app,
+		drizzleUserRepository,
+		drizzleSessionRepository,
+	);
+	const setup2FAService = new Setup2FAService(
+		totpService,
+		drizzleUserRepository,
+	);
 	const enable2FAService = new Enable2FAService(
 		totpService,
-		drizzleUserService,
+		drizzleUserRepository,
 	);
 	const verify2FAService = new Verify2FAService(
 		app,
 		totpService,
-		drizzleUserService,
+		drizzleUserRepository,
 	);
 
 	app.withTypeProvider<ZodTypeProvider>().post(
@@ -53,10 +62,14 @@ export const authRoute = async (app: FastifyInstance) => {
 		},
 		async (request, reply) => {
 			const { email, password } = request.body;
+			const userAgent = request.headers["user-agent"] ?? "unknown";
+			const { ip } = request;
 
 			const { left, right } = await loginService.execute({
 				email,
 				password,
+				ipAddress: ip,
+				userAgent,
 			});
 
 			if (left) {
