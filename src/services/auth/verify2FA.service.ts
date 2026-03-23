@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import type { SessionsRepository } from "repositories/sessions-repository";
 import type { UsersRepository } from "repositories/users-repository";
 import type { Either, Service } from "services/service";
 import type { TotpService } from "services/totp/totp.service";
@@ -6,6 +7,8 @@ import type { TotpService } from "services/totp/totp.service";
 interface Verify2FAServiceRequest {
 	code: string;
 	cdUser: number;
+	userAgent: string;
+	ipAddress: string;
 }
 
 interface Verify2FAServiceResponse {
@@ -19,11 +22,14 @@ export class Verify2FAService
 		private readonly app: FastifyInstance,
 		private readonly totpService: TotpService,
 		private readonly usersRepository: UsersRepository,
+		private readonly sessionsRepository: SessionsRepository,
 	) {}
 
 	async execute({
 		cdUser,
 		code,
+		ipAddress,
+		userAgent,
 	}: Verify2FAServiceRequest): Promise<
 		Either<Error, Verify2FAServiceResponse>
 	> {
@@ -61,6 +67,15 @@ export class Verify2FAService
 					expiresIn: "1d",
 				},
 			);
+
+			await this.sessionsRepository.create({
+				dsIpAddress: ipAddress,
+				dsTokenHash: token,
+				dsUserAgent: userAgent,
+				cdUser: user.cdUser,
+				dtExpiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1d
+				dtRevoked: null,
+			});
 
 			return {
 				right: {

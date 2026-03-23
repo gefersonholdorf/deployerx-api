@@ -1,9 +1,117 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "2c4bfd91-6e39-44c7-b2d5-76b229a92bdf",
+  "id": "ca60cf4e-c41c-4877-a974-c5b48c37cbe9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "sessions": {
+      "name": "sessions",
+      "columns": {
+        "cd_session": {
+          "name": "cd_session",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "cd_user": {
+          "name": "cd_user",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_user_agent": {
+          "name": "ds_user_agent",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_ip_address": {
+          "name": "ds_ip_address",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ds_token_hash": {
+          "name": "ds_token_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ds_temp_token": {
+          "name": "ds_temp_token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dt_revoked": {
+          "name": "dt_revoked",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dt_expires_at": {
+          "name": "dt_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dt_created_at": {
+          "name": "dt_created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sessions_cd_user_users_cd_user_fk": {
+          "name": "sessions_cd_user_users_cd_user_fk",
+          "tableFrom": "sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "cd_user"
+          ],
+          "columnsTo": [
+            "cd_user"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sessions_cd_session": {
+          "name": "sessions_cd_session",
+          "columns": [
+            "cd_session"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "sessions_ds_token_hash_unique": {
+          "name": "sessions_ds_token_hash_unique",
+          "columns": [
+            "ds_token_hash"
+          ]
+        },
+        "sessions_ds_temp_token_unique": {
+          "name": "sessions_ds_temp_token_unique",
+          "columns": [
+            "ds_temp_token"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
     "users": {
       "name": "users",
       "columns": {

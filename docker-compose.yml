@@ -1,15 +1,4 @@
 services:
-  deployerx-api:
-    container_name: deployerx-api
-    restart: unless-stopped
-    depends_on:
-      - db
-    build: .
-    ports:
-      - "3333:3333"
-    env_file:
-      - .env.app
-
   db:
     container_name: deployerx-db
     image: mysql:8.0
@@ -23,6 +12,17 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+
+  deployerx-api:
+    container_name: deployerx-api
+    restart: unless-stopped
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "3333:3333"
+    env_file:
+      - .env.app
 
 volumes:
   db_data:

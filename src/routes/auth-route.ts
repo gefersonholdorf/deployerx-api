@@ -32,6 +32,7 @@ export const authRoute = async (app: FastifyInstance) => {
 		app,
 		totpService,
 		drizzleUserRepository,
+		drizzleSessionRepository,
 	);
 
 	app.withTypeProvider<ZodTypeProvider>().post(
@@ -198,7 +199,10 @@ export const authRoute = async (app: FastifyInstance) => {
 				description: "Verify a user's 2FA code and complete authentication.",
 				tags: ["Auth"],
 				body: z.object({
-					code: z.string(),
+					code: z
+						.string()
+						.min(6, "The code must have at least 6 characters.")
+						.max(6, "The code must have a maximum of 6 characters."),
 				}),
 				response: {
 					200: z.object({
@@ -219,8 +223,15 @@ export const authRoute = async (app: FastifyInstance) => {
 		async (request, reply) => {
 			const { code } = request.body;
 			const { cdUser } = request.auth;
+			const userAgent = request.headers["user-agent"] ?? "unknown";
+			const { ip } = request;
 
-			const { left, right } = await verify2FAService.execute({ code, cdUser });
+			const { left, right } = await verify2FAService.execute({
+				code,
+				cdUser,
+				userAgent,
+				ipAddress: ip,
+			});
 
 			if (left) {
 				if (left instanceof Error) {

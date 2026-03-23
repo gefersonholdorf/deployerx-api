@@ -1,7 +1,7 @@
 FROM node:lts-alpine
-WORKDIR /src
+WORKDIR /
 COPY package*.json ./
-RUN npm install --production
+RUN npm ci
 COPY . .
 EXPOSE 3333
 RUN npm run db-migrate

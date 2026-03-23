@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1774050501845,
-      "tag": "0000_silent_mariko_yashida",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1774061612039,
-      "tag": "0001_unknown_maginty",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1774223281456,
-      "tag": "0002_deep_scourge",
+      "when": 1774298024848,
+      "tag": "0000_flimsy_omega_sentinel",
       "breakpoints": true
     }
   ]

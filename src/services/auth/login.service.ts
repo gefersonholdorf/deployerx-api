@@ -60,6 +60,15 @@ export class LoginService implements Service<LoginRequest, LoginResponse> {
 				},
 			);
 
+			await this.sessionsRepository.create({
+				dsIpAddress: ipAddress,
+				dsTempToken: tempToken,
+				dsUserAgent: userAgent,
+				cdUser: existingUserByEmail.cdUser,
+				dtExpiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1d
+				dtRevoked: null,
+			});
+
 			return {
 				right: {
 					requires2FA: true,

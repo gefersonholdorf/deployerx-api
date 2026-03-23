@@ -6,11 +6,25 @@ import type {
 	SessionCreate,
 	SessionsRepository,
 } from "repositories/sessions-repository";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export class DrizzleSessionsRepository implements SessionsRepository {
 	constructor(private readonly app: FastifyInstance) {}
 
 	async create(data: SessionCreate): Promise<void> {
+		const nowBR = dayjs().toDate();
+
+		await this.app.db
+			.update(sessions)
+			.set({
+				dtRevoked: nowBR,
+			})
+			.where(eq(sessions.cdUser, data.cdUser));
 		await this.app.db.insert(sessions).values(data);
 	}
 

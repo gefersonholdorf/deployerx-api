@@ -30,6 +30,7 @@ export const usersSeed = async () => {
 			dsPhone: "479911246560",
 		});
 	} catch (error) {
+		console.error(error);
 		throw new Error(
 			`Error seeding users: ${error instanceof Error ? error.message : String(error)}`,
 		);
