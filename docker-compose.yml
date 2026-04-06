@@ -12,6 +12,8 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - connection_deployer
 
   deployerx-api:
     container_name: deployerx-api
@@ -23,6 +25,12 @@ services:
       - "3333:3333"
     env_file:
       - .env.app
+    networks:
+      - connection_deployer
 
 volumes:
   db_data:
+
+networks:
+  connection_deployer:
+    driver: bridge
