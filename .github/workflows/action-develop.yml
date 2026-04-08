@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
+    name: "Build and Push"
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
@@ -14,5 +15,12 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v3
 
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
+          cache: 'npm'
+
       - name: Deploy
-        run: echo "Deploy executando..."
+        run: |
+            docker build -t deployerx-api:latest .
