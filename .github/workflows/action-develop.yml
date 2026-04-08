@@ -3,6 +3,6 @@ name: "Deploy DeployerX API Development"
 on:
     push:
         branches:
-            - master
+            - main
 
 jobs:
